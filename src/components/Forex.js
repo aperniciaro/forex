@@ -3,8 +3,8 @@ import axios from 'axios'
 
 export default function Forex() {
   const [currentPage, setCurrentPage] = useState(1)
-  const [baseCurrency, setBaseCurrency] = useState('USD')
-  const [compareCurrency, setCompareCurrency] = useState('USD')
+  const [baseCurrency, setBaseCurrency] = useState('')
+  const [compareCurrency, setCompareCurrency] = useState('')
   const [exchangeInfo, setExchangeInfo] = useState([])
   const [exchangeDates, setExchangeDates] = useState([])
   const [currencyList, setCurrencyList] = useState([])
@@ -49,9 +49,9 @@ export default function Forex() {
         <h1>Currency Trader</h1>
       </header>
       <section className="menus">
+        <h2>Select currencies to compare: </h2>
         <select
           className="from-currency"
-          defaultValue="USD"
           onChange={event => setBaseCurrency(event.target.value)}
         >
           {currencyList.map((currency, index) => {
@@ -68,7 +68,6 @@ export default function Forex() {
         </select>
         <select
           className="to-currency"
-          defaultValue="USD"
           onChange={event => setCompareCurrency(event.target.value)}
         >
           {currencyList.map((currency, index) => {
@@ -91,7 +90,7 @@ export default function Forex() {
         </p>
       </section>
       <section className="historical-rates">
-        <h5>1 year average: </h5>
+        <h3>1 year average: </h3>
         <p className="one-yr-avg">
           {} {}
         </p>
