@@ -7,8 +7,7 @@ export default function Forex() {
   useEffect(() => {
     const today = todaysDate()
     const prevDate = startDate(today)
-    const apiUrl =
-      'https://api.exchangeratesapi.io/history?start_at=2009-03-06&end_at=2019-03-06&base=USD'
+    const apiUrl = `https://api.exchangeratesapi.io/history?start_at=${prevDate}&end_at=${today}&base=USD`
     axios.get(apiUrl).then(resp => {
       console.log({ resp })
     })
