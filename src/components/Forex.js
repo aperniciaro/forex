@@ -3,11 +3,12 @@ import axios from 'axios'
 
 export default function Forex() {
   const [currentPage, setCurrentPage] = useState(1)
+  const [baseCurrency, seBaseCurrency] = useState('USD')
 
   useEffect(() => {
     const today = todaysDate()
     const prevDate = startDate(today)
-    const apiUrl = `https://api.exchangeratesapi.io/history?start_at=${prevDate}&end_at=${today}&base=USD`
+    const apiUrl = `https://api.exchangeratesapi.io/history?start_at=${prevDate}&end_at=${today}&base=${baseCurrency}`
     axios.get(apiUrl).then(resp => {
       console.log({ resp })
     })
