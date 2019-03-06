@@ -3,16 +3,22 @@ import axios from 'axios'
 
 export default function Forex() {
   const [currentPage, setCurrentPage] = useState(1)
-  const [baseCurrency, seBaseCurrency] = useState('USD')
+  const [baseCurrency, setBaseCurrency] = useState('USD')
+  const [compareCurrency, setCompareCurrency] = useState('USD')
+  const [exchangeInfo, setExchangeInfo] = useState([])
+  const [exchangeDates, setExchangeDates] = useState([])
+  const [currencyList, setCurrencyList] = useState([])
 
   useEffect(() => {
     const today = todaysDate()
     const prevDate = startDate(today)
     const apiUrl = `https://api.exchangeratesapi.io/history?start_at=${prevDate}&end_at=${today}&base=${baseCurrency}`
     axios.get(apiUrl).then(resp => {
-      console.log({ resp })
+      setExchangeInfo(resp.data.rates)
+      setExchangeDates(Object.values(resp.data.rates))
+      setCurrencyList(Object.keys(Object.values(resp.data.rates)[0]))
     })
-  }, [currentPage, {}])
+  }, [currentPage])
 
   const todaysDate = () => {
     let currentDate = new Date()
@@ -43,13 +49,45 @@ export default function Forex() {
         <h1>Currency Trader</h1>
       </header>
       <section className="menus">
-        <select className="from-currency" />
-        <select className="to-currency" />
+        <select
+          className="from-currency"
+          defaultValue="USD"
+          onChange={event => setBaseCurrency(event.target.value)}
+        >
+          {currencyList.map((currency, index) => {
+            return (
+              <option
+                key={index}
+                value={currencyList[index]}
+                name={currencyList[index]}
+              >
+                {currencyList[index]}
+              </option>
+            )
+          })}
+        </select>
+        <select
+          className="to-currency"
+          defaultValue="USD"
+          onChange={event => setCompareCurrency(event.target.value)}
+        >
+          {currencyList.map((currency, index) => {
+            return (
+              <option
+                key={index}
+                value={currencyList[index]}
+                name={currencyList[index]}
+              >
+                {currencyList[index]}
+              </option>
+            )
+          })}
+        </select>
       </section>
       <section className="current-rate">
-        <p>{} trading at </p>
+        <p>{baseCurrency} trading at </p>
         <p>
-          {} {}
+          {} {compareCurrency}
         </p>
       </section>
       <section className="historical-rates">
