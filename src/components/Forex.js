@@ -5,12 +5,37 @@ export default function Forex() {
   const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {
+    const today = todaysDate()
+    const prevDate = startDate(today)
     const apiUrl =
       'https://api.exchangeratesapi.io/history?start_at=2009-03-06&end_at=2019-03-06&base=USD'
     axios.get(apiUrl).then(resp => {
       console.log({ resp })
     })
   }, [currentPage, {}])
+
+  const todaysDate = () => {
+    let currentDate = new Date()
+    let dd = currentDate.getDate()
+    let mm = currentDate.getMonth() + 1
+    const yyyy = currentDate.getFullYear()
+
+    if (dd < 10) {
+      dd = '0' + dd
+    }
+
+    if (mm < 10) {
+      mm = '0' + mm
+    }
+
+    return yyyy + '-' + mm + '-' + dd
+  }
+
+  const startDate = today => {
+    const dateParts = today.split('-')
+    dateParts[0] -= 10
+    return dateParts.join('-')
+  }
 
   return (
     <>
