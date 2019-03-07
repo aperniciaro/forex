@@ -80,7 +80,7 @@ export default function Forex() {
   return (
     <>
       <header>
-        <h1>Currency Trader</h1>
+        <h1>Currency Converter</h1>
       </header>
       <section className="menus">
         <h2>Select currencies to compare: </h2>
