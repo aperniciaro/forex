@@ -3,20 +3,21 @@ import axios from 'axios'
 
 export default function Forex() {
   const [currentPage, setCurrentPage] = useState(1)
-  const [baseCurrency, setBaseCurrency] = useState('')
-  const [compareCurrency, setCompareCurrency] = useState('')
-  const [exchangeInfo, setExchangeInfo] = useState([])
-  const [exchangeDates, setExchangeDates] = useState([])
+  const [baseCurrency, setBaseCurrency] = useState('MXN')
+  const [compareCurrency, setCompareCurrency] = useState('MXN')
+  // const [exchangeInfo, setExchangeInfo] = useState([])
+  // const [exchangeDates, setExchangeDates] = useState([])
   const [currencyList, setCurrencyList] = useState([])
+  const [exchangeRate, setExchangeRate] = useState(1)
 
   useEffect(() => {
     const today = todaysDate()
-    const prevDate = startDate(today)
-    const apiUrl = `https://api.exchangeratesapi.io/history?start_at=${prevDate}&end_at=${today}&base=${baseCurrency}`
+    // const prevDate = startDate(today)
+    const apiUrl = `https://api.exchangeratesapi.io/history?start_at=${today}&end_at=${today}&base=${baseCurrency}`
     axios.get(apiUrl).then(resp => {
-      setExchangeInfo(resp.data.rates)
-      setExchangeDates(Object.values(resp.data.rates))
-      setCurrencyList(Object.keys(Object.values(resp.data.rates)[0]))
+      // setExchangeInfo(resp.data.rates)
+      // setExchangeDates(Object.entries(resp.data.rates))
+      setCurrencyList(Object.entries(Object.values(resp.data.rates)[0]))
     })
   }, [currentPage])
 
@@ -37,10 +38,28 @@ export default function Forex() {
     return yyyy + '-' + mm + '-' + dd
   }
 
-  const startDate = today => {
-    const dateParts = today.split('-')
-    dateParts[0] -= 10
-    return dateParts.join('-')
+  // const startDate = today => {
+  //   const dateParts = today.split('-')
+  //   dateParts[0] -= 10
+  //   return dateParts.join('-')
+  // }
+
+  const setComparison = (source, currency) => {
+    if (source == 'base') {
+      setBaseCurrency(currency)
+    } else {
+      setCompareCurrency(currency)
+    }
+    getRate()
+    // getOneYearAvg()
+  }
+
+  const getRate = () => {
+    for (let i = 0; i < currencyList.length; i++) {
+      if (currencyList[i][0] == compareCurrency) {
+        setExchangeRate(currencyList[i][1])
+      }
+    }
   }
 
   return (
@@ -52,32 +71,32 @@ export default function Forex() {
         <h2>Select currencies to compare: </h2>
         <select
           className="from-currency"
-          onChange={event => setBaseCurrency(event.target.value)}
+          onChange={event => setComparison('base', event.target.value)}
         >
           {currencyList.map((currency, index) => {
             return (
               <option
                 key={index}
-                value={currencyList[index]}
-                name={currencyList[index]}
+                value={currencyList[index][0]}
+                name={currencyList[index][0]}
               >
-                {currencyList[index]}
+                {currencyList[index][0]}
               </option>
             )
           })}
         </select>
         <select
           className="to-currency"
-          onChange={event => setCompareCurrency(event.target.value)}
+          onChange={event => setComparison('compare', event.target.value)}
         >
           {currencyList.map((currency, index) => {
             return (
               <option
                 key={index}
-                value={currencyList[index]}
-                name={currencyList[index]}
+                value={currencyList[index][0]}
+                name={currencyList[index][0]}
               >
-                {currencyList[index]}
+                {currencyList[index][0]}
               </option>
             )
           })}
@@ -86,15 +105,15 @@ export default function Forex() {
       <section className="current-rate">
         <p>{baseCurrency} trading at </p>
         <p>
-          {} {compareCurrency}
+          {exchangeRate} {compareCurrency}
         </p>
       </section>
-      <section className="historical-rates">
+      {/* <section className="historical-rates">
         <h3>1 year average: </h3>
         <p className="one-yr-avg">
           {} {}
         </p>
-        <h5>10 year average: </h5>
+        <h3>10 year average: </h3>
         <p className="ten-yr-avg">
           {} {}
         </p>
@@ -104,7 +123,7 @@ export default function Forex() {
         <p>Trading below average</p>
         <p className="red-text">Red: </p>
         <p>Trading above average</p>
-      </section>
+      </section> */}
     </>
   )
 }
