@@ -15,6 +15,7 @@ export default function Forex() {
   }, [currentPage])
 
   const loadApi = () => {
+    // console.log(baseCurrency)
     const today = todaysDate()
     // const prevDate = startDate(today)
     const apiUrl = `https://api.exchangeratesapi.io/history?start_at=${today}&end_at=${today}&base=${baseCurrency}`
@@ -23,6 +24,7 @@ export default function Forex() {
       // setExchangeDates(Object.entries(resp.data.rates))
       setCurrencyList(Object.entries(Object.values(resp.data.rates)[0]))
     })
+    console.log('api loaded')
   }
 
   const todaysDate = () => {
@@ -51,6 +53,7 @@ export default function Forex() {
   const setComparison = (source, currency) => {
     if (source == 'base') {
       setBaseCurrency(currency)
+      console.log(baseCurrency)
       loadApi()
       for (let i = 0; i < currencyList.length; i++) {
         if (currencyList[i][0] == compareCurrency) {
