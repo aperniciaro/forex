@@ -11,6 +11,10 @@ export default function Forex() {
   const [exchangeRate, setExchangeRate] = useState(1)
 
   useEffect(() => {
+    getApi()
+  }, [currentPage])
+
+  const getApi = () => {
     const today = todaysDate()
     // const prevDate = startDate(today)
     const apiUrl = `https://api.exchangeratesapi.io/history?start_at=${today}&end_at=${today}&base=${baseCurrency}`
@@ -19,7 +23,7 @@ export default function Forex() {
       // setExchangeDates(Object.entries(resp.data.rates))
       setCurrencyList(Object.entries(Object.values(resp.data.rates)[0]))
     })
-  }, [currentPage])
+  }
 
   const todaysDate = () => {
     let currentDate = new Date()
@@ -47,20 +51,31 @@ export default function Forex() {
   const setComparison = (source, currency) => {
     if (source == 'base') {
       setBaseCurrency(currency)
+      getApi()
+      for (let i = 0; i < currencyList.length; i++) {
+        if (currencyList[i][0] == compareCurrency) {
+          setExchangeRate(currencyList[i][1])
+        }
+      }
     } else {
       setCompareCurrency(currency)
+      for (let i = 0; i < currencyList.length; i++) {
+        if (currencyList[i][0] == currency) {
+          setExchangeRate(currencyList[i][1])
+        }
+      }
     }
-    getRate()
+
     // getOneYearAvg()
   }
 
-  const getRate = () => {
-    for (let i = 0; i < currencyList.length; i++) {
-      if (currencyList[i][0] == compareCurrency) {
-        setExchangeRate(currencyList[i][1])
-      }
-    }
-  }
+  // const getRate = () => {
+  //   for (let i = 0; i < currencyList.length; i++) {
+  //     if (currencyList[i][0] == compareCurrency) {
+  //       setExchangeRate(currencyList[i][1])
+  //     }
+  //   }
+  // }
 
   return (
     <>
