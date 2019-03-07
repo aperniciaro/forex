@@ -11,10 +11,10 @@ export default function Forex() {
   const [exchangeRate, setExchangeRate] = useState(1)
 
   useEffect(() => {
-    getApi()
+    loadApi()
   }, [currentPage])
 
-  const getApi = () => {
+  const loadApi = () => {
     const today = todaysDate()
     // const prevDate = startDate(today)
     const apiUrl = `https://api.exchangeratesapi.io/history?start_at=${today}&end_at=${today}&base=${baseCurrency}`
@@ -51,7 +51,7 @@ export default function Forex() {
   const setComparison = (source, currency) => {
     if (source == 'base') {
       setBaseCurrency(currency)
-      getApi()
+      loadApi()
       for (let i = 0; i < currencyList.length; i++) {
         if (currencyList[i][0] == compareCurrency) {
           setExchangeRate(currencyList[i][1])
