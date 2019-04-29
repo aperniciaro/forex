@@ -3,8 +3,8 @@ import axios from 'axios'
 
 export default function Forex() {
   const [currentPage, setCurrentPage] = useState(1)
-  const [baseCurrency, setBaseCurrency] = useState('MXN')
-  const [compareCurrency, setCompareCurrency] = useState('MXN')
+  const [baseCurrency, setBaseCurrency] = useState('BGN')
+  const [compareCurrency, setCompareCurrency] = useState('BGN')
   // const [exchangeInfo, setExchangeInfo] = useState([])
   // const [exchangeDates, setExchangeDates] = useState([])
   const [currencyList, setCurrencyList] = useState([])
@@ -15,7 +15,6 @@ export default function Forex() {
   }, [currentPage])
 
   const loadApi = () => {
-    // console.log(baseCurrency)
     const today = todaysDate()
     // const prevDate = startDate(today)
     const apiUrl = `https://api.exchangeratesapi.io/history?start_at=${today}&end_at=${today}&base=${baseCurrency}`
@@ -23,8 +22,7 @@ export default function Forex() {
       // setExchangeInfo(resp.data.rates)
       // setExchangeDates(Object.entries(resp.data.rates))
       setCurrencyList(Object.entries(Object.values(resp.data.rates)[0]))
-    })
-    console.log('api loaded')
+    }, getRate())
   }
 
   const todaysDate = () => {
@@ -51,34 +49,24 @@ export default function Forex() {
   // }
 
   const setComparison = (source, currency) => {
-    if (source == 'base') {
+    if (source === 'base') {
       setBaseCurrency(currency)
       console.log(baseCurrency)
       loadApi()
-      for (let i = 0; i < currencyList.length; i++) {
-        if (currencyList[i][0] == compareCurrency) {
-          setExchangeRate(currencyList[i][1])
-        }
-      }
     } else {
       setCompareCurrency(currency)
-      for (let i = 0; i < currencyList.length; i++) {
-        if (currencyList[i][0] == currency) {
-          setExchangeRate(currencyList[i][1])
-        }
-      }
+      getRate()
     }
-
     // getOneYearAvg()
   }
 
-  // const getRate = () => {
-  //   for (let i = 0; i < currencyList.length; i++) {
-  //     if (currencyList[i][0] == compareCurrency) {
-  //       setExchangeRate(currencyList[i][1])
-  //     }
-  //   }
-  // }
+  const getRate = () => {
+    for (let i = 0; i < currencyList.length; i++) {
+      if (currencyList[i][0] == compareCurrency) {
+        setExchangeRate(currencyList[i][1])
+      }
+    }
+  }
 
   return (
     <>
@@ -89,6 +77,7 @@ export default function Forex() {
         <h2>Select currencies to compare: </h2>
         <select
           className="from-currency"
+          defaultValue="BGN"
           onChange={event => setComparison('base', event.target.value)}
         >
           {currencyList.map((currency, index) => {
@@ -105,6 +94,7 @@ export default function Forex() {
         </select>
         <select
           className="to-currency"
+          defaultValue="BGN"
           onChange={event => setComparison('compare', event.target.value)}
         >
           {currencyList.map((currency, index) => {
